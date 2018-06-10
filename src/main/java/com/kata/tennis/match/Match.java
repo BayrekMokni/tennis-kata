@@ -1,11 +1,13 @@
 package com.kata.tennis.match;
 
 import com.kata.tennis.set.SetTennisGame;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 
 import static com.kata.tennis.match.MatchStatus.IN_PROGRESS;
 
+@Component
 public class Match {
 
     private MatchStatus matchStatus;
