@@ -26,7 +26,6 @@ public class MatchBuilder {
     }
 
     public Match build() {
-
         return match
                 .setFirstPlayerWinSetNumber(0)
                 .setSecondPlayerWinSetNumber(0);

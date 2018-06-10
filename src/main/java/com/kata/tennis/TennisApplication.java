@@ -8,5 +8,7 @@ public class TennisApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TennisApplication.class, args);
+        TennisSimulator tennisSimulator = new TennisSimulator();
+        tennisSimulator.run();
     }
 }

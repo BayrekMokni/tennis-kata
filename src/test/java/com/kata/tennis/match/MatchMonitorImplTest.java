@@ -29,7 +29,7 @@ public class MatchMonitorImplTest {
     @Test
     public void checkScoresShouldNotifyObservers() {
         Integer playerId = 1;
-        matchMonitor.checkScores(playerId);
+        matchMonitor.markPoint(playerId);
 
         verify(matchObservable, times(1)).notifyObservers(playerId, match);
     }
