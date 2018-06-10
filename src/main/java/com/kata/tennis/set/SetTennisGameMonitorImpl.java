@@ -1,10 +1,12 @@
 package com.kata.tennis.set;
 
 import com.kata.tennis.game.GameScore;
+import org.springframework.stereotype.Service;
 
 import static com.kata.tennis.game.GameScore.FIRST_PLAYER_WIN;
 import static com.kata.tennis.game.GameScore.SECOND_PLAYER_WIN;
 
+@Service
 public class SetTennisGameMonitorImpl implements SetTennisGameMonitor {
 
     private SetTennisGame setTennisGame;

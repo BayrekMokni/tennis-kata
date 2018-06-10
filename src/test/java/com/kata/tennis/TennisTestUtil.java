@@ -30,4 +30,10 @@ public class TennisTestUtil {
                 .withGame(game)
                 .buildAndStart();
     }
+
+    public static SetTennisGame getAndStartSetTennisGame(Game game) {
+        return new SetTennisGameBuilder()
+                .withGame(game)
+                .buildAndStart();
+    }
 }
