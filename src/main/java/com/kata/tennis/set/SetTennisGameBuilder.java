@@ -16,10 +16,14 @@ public class SetTennisGameBuilder {
     }
 
     public SetTennisGame build() {
-        return setTennisGame.setScoresToZero().setInProgress(false);
+        return setTennisGame
+                .setScoresToZero()
+                .setInProgress(false);
     }
 
     public SetTennisGame buildAndStart() {
-        return setTennisGame.setScoresToZero().setInProgress(true);
+        return setTennisGame
+                .setScoresToZero()
+                .setInProgress(true);
     }
 }

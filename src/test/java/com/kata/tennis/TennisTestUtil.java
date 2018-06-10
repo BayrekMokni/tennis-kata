@@ -2,6 +2,8 @@ package com.kata.tennis;
 
 import com.kata.tennis.game.Game;
 import com.kata.tennis.game.GameBuilder;
+import com.kata.tennis.match.Match;
+import com.kata.tennis.match.MatchBuilder;
 import com.kata.tennis.player.Player;
 import com.kata.tennis.player.PlayerBuilder;
 import com.kata.tennis.set.SetTennisGame;
@@ -29,5 +31,13 @@ public class TennisTestUtil {
         return new SetTennisGameBuilder()
                 .withGame(game)
                 .buildAndStart();
+    }
+
+    public static Match getAndStartMatch(Player firstPlayer, Player secondPlayer) {
+        Match match = new MatchBuilder()
+                .betweenPlayers(firstPlayer, secondPlayer)
+                .build();
+        match.start();
+        return match;
     }
 }
