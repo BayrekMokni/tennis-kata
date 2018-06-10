@@ -1,6 +1,6 @@
 package com.kata.tennis.game;
 
-public enum PlayerScore {
+public enum Score {
 
     SCORE_ZERO(0, "The score is 0"),
     SCORE_15(15, "The score is 15"),
@@ -10,7 +10,7 @@ public enum PlayerScore {
     Integer value;
     String description;
 
-    PlayerScore(Integer value, String description) {
+    Score(Integer value, String description) {
         this.value = value;
         this.description = description;
     }
