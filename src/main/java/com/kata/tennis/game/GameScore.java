@@ -131,14 +131,26 @@ public enum GameScore {
         }
     };
 
-    private PlayerScore player1Score;
-    private PlayerScore player2Score;
+    private PlayerScore firstPlayerScore;
+    private PlayerScore secondPlayerScore;
     private String value;
 
-    GameScore(PlayerScore player1Score, PlayerScore player2Score, String value) {
-        this.player1Score = player1Score;
-        this.player2Score = player2Score;
+    GameScore(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, String value) {
+        this.firstPlayerScore = firstPlayerScore;
+        this.secondPlayerScore = secondPlayerScore;
         this.value = value;
+    }
+
+    public PlayerScore getFirstPlayerScore() {
+        return firstPlayerScore;
+    }
+
+    public PlayerScore getSecondPlayerScore() {
+        return secondPlayerScore;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     private static boolean isFirstPlayerTheWinner(Integer winnerPlayerId) {
