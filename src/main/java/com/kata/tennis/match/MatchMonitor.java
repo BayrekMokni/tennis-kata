@@ -1,5 +1,8 @@
 package com.kata.tennis.match;
 
+import com.kata.tennis.observator.MatchObserver;
+
 public interface MatchMonitor {
-    void checkScores(Integer playerMarkedThePointId);
+    void markPoint(Integer playerMarkedThePointId);
+    void addObserver(MatchObserver matchObserver);
 }

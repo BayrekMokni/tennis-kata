@@ -10,26 +10,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class MatchMonitorImpl implements MatchMonitor {
 
-    @Autowired
+    private Match match;
     private MatchObservable matchObservable;
 
-    @Autowired
-    private Match match;
-
-    public Match getMatch() {
-        return match;
-    }
-
-    public void setMatch(Match match) {
-        this.match = match;
-    }
-
     @Override
-    public void checkScores(Integer playerMarkedThePointId) {
+    public void markPoint(Integer playerMarkedThePointId) {
         matchObservable.notifyObservers(playerMarkedThePointId, match);
     }
 
+    @Override
     public void addObserver(MatchObserver matchObserver) {
         matchObservable.addObserver(matchObserver);
+    }
+
+    @Autowired
+    public void setMatchObservable(MatchObservable matchObservable) {
+        this.matchObservable = matchObservable;
+    }
+
+    @Autowired
+    public void setMatch(Match match) {
+        this.match = match;
     }
 }

@@ -2,6 +2,7 @@ package com.kata.tennis.observator.impl;
 
 import com.kata.tennis.exception.MatchAlreadyOverRuntimeException;
 import com.kata.tennis.exception.NoPlayerFoundRuntimeException;
+import com.kata.tennis.game.GameScore;
 import com.kata.tennis.match.Match;
 import com.kata.tennis.observator.MatchObserver;
 import com.kata.tennis.set.SetTennisGame;
@@ -12,9 +13,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
+import static com.kata.tennis.game.GameScore.*;
 import static com.kata.tennis.match.MatchStatus.FIRST_PLAYER_WIN;
 import static com.kata.tennis.match.MatchStatus.SECOND_PLAYER_WIN;
 
+/**
+ * This Observable pattern help us to notify classes that are observing if any changes will be made.
+ * Our observer here will handle the notification when any player will make a point.
+ * We can add any other observer to handle differently the notification. For example when notifying a betting website
+ * observing the game.
+ */
 @Service
 public class MatchObserverImpl implements MatchObserver {
 
@@ -69,6 +77,7 @@ public class MatchObserverImpl implements MatchObserver {
         SetTennisGame setTennisGame = new SetTennisGameBuilder()
                 .withGame(currentSetTennisGame.getGame())
                 .buildAndStart();
+        setTennisGame.getGame().setScore(ZERO_ALL);
         match.getSets().add(setTennisGame);
         return match;
     }

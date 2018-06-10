@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import static com.kata.tennis.game.GameScore.FIRST_PLAYER_WIN;
 import static com.kata.tennis.game.GameScore.SECOND_PLAYER_WIN;
+import static com.kata.tennis.game.GameScore.ZERO_ALL;
 
 @Service
 public class SetTennisGameMonitorImpl implements SetTennisGameMonitor {
@@ -29,10 +30,13 @@ public class SetTennisGameMonitorImpl implements SetTennisGameMonitor {
         } else if (SECOND_PLAYER_WIN.equals(newScore)) {
             setTennisGame.increaseSecondPlayerSetScore();
             checkSetStatus();
+        } else {
+            setTennisGame.getGame().setScore(newScore);
         }
     }
 
     private void checkSetStatus() {
+        setTennisGame.getGame().setScore(ZERO_ALL);
         if (isSixOrGreaterScore() && isDiff2()) {
             setTennisGame.setInProgress(false);
         }
