@@ -18,6 +18,7 @@ public class SetTennisGameMonitorImpl implements SetTennisGameMonitor {
         return this;
     }
 
+    @Override
     public void winPoint(Integer playerId) {
         GameScore newScore = setTennisGame.getGame().getScore().getNext(playerId);
         if (FIRST_PLAYER_WIN.equals(newScore)) {
