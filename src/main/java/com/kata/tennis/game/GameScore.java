@@ -1,6 +1,6 @@
 package com.kata.tennis.game;
 
-import static com.kata.tennis.game.PlayerScore.*;
+import static com.kata.tennis.game.Score.*;
 
 public enum GameScore {
 
@@ -131,21 +131,21 @@ public enum GameScore {
         }
     };
 
-    private PlayerScore firstPlayerScore;
-    private PlayerScore secondPlayerScore;
+    private Score firstPlayerScore;
+    private Score secondPlayerScore;
     private String value;
 
-    GameScore(PlayerScore firstPlayerScore, PlayerScore secondPlayerScore, String value) {
+    GameScore(Score firstPlayerScore, Score secondPlayerScore, String value) {
         this.firstPlayerScore = firstPlayerScore;
         this.secondPlayerScore = secondPlayerScore;
         this.value = value;
     }
 
-    public PlayerScore getFirstPlayerScore() {
+    public Score getFirstPlayerScore() {
         return firstPlayerScore;
     }
 
-    public PlayerScore getSecondPlayerScore() {
+    public Score getSecondPlayerScore() {
         return secondPlayerScore;
     }
 
