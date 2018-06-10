@@ -2,20 +2,19 @@ package com.kata.tennis.match;
 
 import com.kata.tennis.exception.MatchAlreadyOverRuntimeException;
 import com.kata.tennis.exception.NoPlayerFoundRuntimeException;
+import com.kata.tennis.game.GameScore;
 import com.kata.tennis.player.Player;
 import com.kata.tennis.set.SetTennisGameMonitorImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static com.kata.tennis.TennisTestUtil.getFirstPlayer;
-import static com.kata.tennis.TennisTestUtil.getSecondPlayer;
+import static com.kata.tennis.TennisTestUtil.*;
 import static com.kata.tennis.game.GameScore.FORTY_ZERO;
 import static com.kata.tennis.game.GameScore.ZERO_FORTY;
-import static com.kata.tennis.match.MatchStatus.FIRST_PLAYER_WIN;
-import static com.kata.tennis.match.MatchStatus.IN_PROGRESS;
-import static com.kata.tennis.match.MatchStatus.SECOND_PLAYER_WIN;
+import static com.kata.tennis.match.MatchStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,20 +24,18 @@ public class MatchMonitorImplTest {
     private MatchMonitorImpl matchMonitor;
 
     private SetTennisGameMonitorImpl setTennisGameMonitor = new SetTennisGameMonitorImpl();
+    private Match match;
+
+    @Before
+    public void setUp() {
+        Player michael = getFirstPlayer("Michael");
+        Player david = getSecondPlayer("David");
+        match = getAndStartMatch(michael, david);
+    }
 
     @Test
     public void checkScoresShouldEndTheMatchWhenFirstPlayerWin() {
-        Player michael = getFirstPlayer("Michael");
-        Player david = getSecondPlayer("David");
-        Match match = new MatchBuilder()
-                .betweenPlayers(michael, david)
-                .build();
-        match.start();
-        match.getSets().getLast().getGame().setScore(FORTY_ZERO);
-        match.getSets().getLast().setScoreFirstPlayer(5);
-        match.getSets().getLast().setScoreSecondPlayer(0);
-        matchMonitor.setMatch(match);
-        matchMonitor.setSetTennisGameMonitor(setTennisGameMonitor);
+        setLastSetData(FORTY_ZERO, 5, 0);
         match.setFirstPlayerWinSetNumber(2);
 
         matchMonitor.checkScores(1);
@@ -48,17 +45,7 @@ public class MatchMonitorImplTest {
 
     @Test
     public void checkScoresShouldEndTheMatchWhenSecondPlayerWin() {
-        Player michael = getFirstPlayer("Michael");
-        Player david = getSecondPlayer("David");
-        Match match = new MatchBuilder()
-                .betweenPlayers(michael, david)
-                .build();
-        match.start();
-        match.getSets().getLast().getGame().setScore(ZERO_FORTY);
-        match.getSets().getLast().setScoreFirstPlayer(3);
-        match.getSets().getLast().setScoreSecondPlayer(5);
-        matchMonitor.setMatch(match);
-        matchMonitor.setSetTennisGameMonitor(setTennisGameMonitor);
+        setLastSetData(ZERO_FORTY, 3, 5);
         match.setSecondPlayerWinSetNumber(2);
 
         matchMonitor.checkScores(2);
@@ -68,17 +55,7 @@ public class MatchMonitorImplTest {
 
     @Test
     public void checkScoresShouldNotEndTheMatch() {
-        Player michael = getFirstPlayer("Michael");
-        Player david = getSecondPlayer("David");
-        Match match = new MatchBuilder()
-                .betweenPlayers(michael, david)
-                .build();
-        match.start();
-        match.getSets().getLast().getGame().setScore(FORTY_ZERO);
-        match.getSets().getLast().setScoreFirstPlayer(5);
-        match.getSets().getLast().setScoreSecondPlayer(0);
-        matchMonitor.setMatch(match);
-        matchMonitor.setSetTennisGameMonitor(setTennisGameMonitor);
+        setLastSetData(FORTY_ZERO, 5, 0);
         match.setFirstPlayerWinSetNumber(1);
 
         matchMonitor.checkScores(1);
@@ -88,11 +65,6 @@ public class MatchMonitorImplTest {
 
     @Test(expected = MatchAlreadyOverRuntimeException.class)
     public void checkScoresShouldThrowMatchAlreadyOverRuntimeException() {
-        Player michael = getFirstPlayer("Michael");
-        Player david = getSecondPlayer("David");
-        Match match = new MatchBuilder()
-                .betweenPlayers(michael, david)
-                .build();
         match.setMatchStatus(FIRST_PLAYER_WIN);
         matchMonitor.setMatch(match);
 
@@ -101,14 +73,16 @@ public class MatchMonitorImplTest {
 
     @Test(expected = NoPlayerFoundRuntimeException.class)
     public void checkScoresShouldThrowNoPlayerFoundRuntimeException() {
-        Player michael = getFirstPlayer("Michael");
-        Player david = getSecondPlayer("David");
-        Match match = new MatchBuilder()
-                .betweenPlayers(michael, david)
-                .build();
-        match.setMatchStatus(IN_PROGRESS);
         matchMonitor.setMatch(match);
 
         matchMonitor.checkScores(5);
+    }
+
+    private void setLastSetData(GameScore value, Integer scoreFirstPlayer, Integer scoreSecondPlayer) {
+        match.getSets().getLast().getGame().setScore(value);
+        match.getSets().getLast().setScoreFirstPlayer(scoreFirstPlayer);
+        match.getSets().getLast().setScoreSecondPlayer(scoreSecondPlayer);
+        matchMonitor.setMatch(match);
+        matchMonitor.setSetTennisGameMonitor(setTennisGameMonitor);
     }
 }
