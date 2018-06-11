@@ -30,7 +30,7 @@ public class SetRuleImplTest {
     }
 
     @Test
-    public void validateShouldEndTheSetWhenFirstPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
+    public void shouldEndTheSet_whenFirstPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
         Integer firstPlayerScore = 5;
         setPlayersScoresSuccessivelyTo(firstPlayerScore, 0);
 
@@ -42,7 +42,7 @@ public class SetRuleImplTest {
     }
 
     @Test
-    public void validateShouldEndTheSetWhenSecondPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
+    public void shouldEndTheSet_whenSecondPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
         Integer secondPlayerScore = 5;
         setPlayersScoresSuccessivelyTo(4, secondPlayerScore);
 
@@ -54,7 +54,7 @@ public class SetRuleImplTest {
     }
 
     @Test
-    public void validateShouldNotEndTheSetWhenScoreIsNotGreaterThanSix() {
+    public void shouldNotEndTheSetAndNotSetTheNewScore_whenScoreIsLessThanSix() {
         Integer secondPlayerScore = 3;
         setPlayersScoresSuccessivelyTo(3, secondPlayerScore);
 
@@ -66,7 +66,7 @@ public class SetRuleImplTest {
     }
 
     @Test
-    public void validateShouldNotEndTheSetAndGetNewScoreWhenScoreIsNotGreaterThanSix() {
+    public void shouldNotEndTheSetAndSetTheNewScore_whenScoreIsNotGreaterThanSix() {
         Integer secondPlayerScore = 4;
         setPlayersScoresSuccessivelyTo(3, secondPlayerScore);
 

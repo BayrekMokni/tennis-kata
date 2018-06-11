@@ -38,7 +38,7 @@ public class SetTennisGameMonitorImplTest {
     }
 
     @Test
-    public void winPointShouldEndTheSetWhenFirstPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
+    public void shouldValidateSetRules_whenPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
         setGameScoreToFORTY_FIFTEEN();
 
         setTennisGameMonitor.winPoint(1);

@@ -30,7 +30,7 @@ public class WinSetGameMatchRuleTest {
     }
 
     @Test
-    public void validateShouldSetMatchStatusToFIRST_PLAYER_WINWhenWinSetIs3() {
+    public void shouldSetMatchStatusToFirstPlayerWin_whenWinSetNumberIs3() {
         match.setFirstPlayerWinSetNumber(3);
 
         winSetGameMatchRule.validate(match);
@@ -39,7 +39,7 @@ public class WinSetGameMatchRuleTest {
     }
 
     @Test
-    public void validateShouldSetMatchStatusToSECOND_PLAYER_WINWhenWinSetIs3() {
+    public void shouldSetMatchStatusToSecondPlayerWin_whenWinSetNumberIs3() {
         match.setSecondPlayerWinSetNumber(3);
 
         winSetGameMatchRule.validate(match);
@@ -48,7 +48,7 @@ public class WinSetGameMatchRuleTest {
     }
 
     @Test
-    public void validateShouldReturnMatchWhenWinSetIsNot3() {
+    public void shouldNotChangeMatchStatus_whenWinSetNumberIsNot3() {
         match.setSecondPlayerWinSetNumber(1);
 
         winSetGameMatchRule.validate(match);
