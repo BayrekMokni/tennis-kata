@@ -3,68 +3,50 @@ package com.kata.tennis.set;
 import com.kata.tennis.game.Game;
 import com.kata.tennis.game.GameScore;
 import com.kata.tennis.player.Player;
+import com.kata.tennis.rule.set.SetRule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mock;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static com.kata.tennis.TennisTestUtil.*;
-import static com.kata.tennis.game.GameScore.FORTY_FIFTEEN;
-import static com.kata.tennis.game.GameScore.THIRTY_FORTY;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.kata.tennis.game.GameScore.FIRST_PLAYER_WIN;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class SetTennisGameMonitorImplTest {
 
     @InjectMocks
     private SetTennisGameMonitorImpl setTennisGameMonitor;
+
+    @Mock
+    private SetTennisGame setTennisGame;
+
+    @Mock
+    private SetRule setRule;
 
     @Before
     public void setUp() {
         Player michael = getFirstPlayer("Michael");
         Player david = getSecondPlayer("David");
         Game game = getGameBetween(michael, david);
-        SetTennisGame setTennisGame = getAndStartSet(game);
+        setTennisGame = getAndStartSet(game);
         setTennisGameMonitor.setSetTennisGame(setTennisGame);
     }
 
     @Test
     public void winPointShouldEndTheSetWhenFirstPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
-        setPlayersScoresSuccessivelyTo(5, 0);
-        setGameScore(FORTY_FIFTEEN);
+        setGameScoreToFORTY_FIFTEEN();
 
         setTennisGameMonitor.winPoint(1);
 
-        assertThat(setTennisGameMonitor.getSetTennisGame().isInProgress()).isFalse();
+        verify(setRule, times(1)).validate(FIRST_PLAYER_WIN, setTennisGame);
     }
 
-    @Test
-    public void winPointShouldEndTheSetWhenSecondPlayerScoreIsGreaterThanSixAndDiffIsTwo() {
-        setPlayersScoresSuccessivelyTo(4, 5);
-        setGameScore(THIRTY_FORTY);
-
-        setTennisGameMonitor.winPoint(2);
-
-        assertThat(setTennisGameMonitor.getSetTennisGame().isInProgress()).isFalse();
-    }
-
-    @Test
-    public void winPointShouldNotEndTheSetWhenScoreIsNotGreaterThanSix() {
-        setPlayersScoresSuccessivelyTo(3, 3);
-        setGameScore(FORTY_FIFTEEN);
-
-        setTennisGameMonitor.winPoint(1);
-
-        assertThat(setTennisGameMonitor.getSetTennisGame().isInProgress()).isTrue();
-    }
-
-    private Game setGameScore(GameScore value) {
-        return setTennisGameMonitor.getSetTennisGame().getGame().setScore(value);
-    }
-
-    private void setPlayersScoresSuccessivelyTo(Integer firstPlayerScore, Integer SecondPlayerScore) {
-        setTennisGameMonitor.getSetTennisGame().setScoreFirstPlayer(firstPlayerScore);
-        setTennisGameMonitor.getSetTennisGame().setScoreSecondPlayer(SecondPlayerScore);
+    private Game setGameScoreToFORTY_FIFTEEN() {
+        return setTennisGameMonitor.getSetTennisGame().getGame().setScore(GameScore.FORTY_FIFTEEN);
     }
 }

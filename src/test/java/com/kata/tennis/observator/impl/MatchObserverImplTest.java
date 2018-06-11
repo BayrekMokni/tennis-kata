@@ -5,11 +5,16 @@ import com.kata.tennis.exception.NoPlayerFoundRuntimeException;
 import com.kata.tennis.game.GameScore;
 import com.kata.tennis.match.Match;
 import com.kata.tennis.player.Player;
+import com.kata.tennis.rule.match.MatchRule;
+import com.kata.tennis.rule.match.MatchRulesImpl;
+import com.kata.tennis.rule.set.SetRuleImpl;
+import com.kata.tennis.set.SetTennisGameMonitor;
 import com.kata.tennis.set.SetTennisGameMonitorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static com.kata.tennis.TennisTestUtil.*;
@@ -24,7 +29,6 @@ public class MatchObserverImplTest {
     @InjectMocks
     private MatchObserverImpl matchObserverImpl;
 
-    private SetTennisGameMonitorImpl setTennisGameMonitor = new SetTennisGameMonitorImpl();
     private Match match;
 
     @Before
@@ -32,7 +36,9 @@ public class MatchObserverImplTest {
         Player michael = getFirstPlayer("Michael");
         Player david = getSecondPlayer("David");
         match = getAndStartMatch(michael, david);
-        matchObserverImpl.setSetTennisGameMonitor(setTennisGameMonitor);
+        SetTennisGameMonitorImpl setTennisGameMonitor = new SetTennisGameMonitorImpl().setSetRule(new SetRuleImpl());
+        matchObserverImpl.setSetTennisGameMonitor(setTennisGameMonitor)
+        .setMatchRule(new MatchRulesImpl());
     }
 
     @Test
