@@ -2,9 +2,9 @@ package com.kata.tennis.observator.impl;
 
 import com.kata.tennis.exception.MatchAlreadyOverRuntimeException;
 import com.kata.tennis.exception.NoPlayerFoundRuntimeException;
-import com.kata.tennis.game.GameScore;
 import com.kata.tennis.match.Match;
 import com.kata.tennis.observator.MatchObserver;
+import com.kata.tennis.rule.match.MatchRule;
 import com.kata.tennis.set.SetTennisGame;
 import com.kata.tennis.set.SetTennisGameBuilder;
 import com.kata.tennis.set.SetTennisGameMonitorImpl;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
-import static com.kata.tennis.game.GameScore.*;
+import static com.kata.tennis.game.GameScore.ZERO_ALL;
 import static com.kata.tennis.match.MatchStatus.FIRST_PLAYER_WIN;
 import static com.kata.tennis.match.MatchStatus.SECOND_PLAYER_WIN;
 
@@ -28,6 +28,7 @@ public class MatchObserverImpl implements MatchObserver {
 
     @Autowired
     private SetTennisGameMonitorImpl setTennisGameMonitor;
+    private MatchRule matchRule;
 
     public SetTennisGameMonitorImpl getSetTennisGameMonitor() {
         return setTennisGameMonitor;
@@ -35,6 +36,15 @@ public class MatchObserverImpl implements MatchObserver {
 
     public MatchObserverImpl setSetTennisGameMonitor(SetTennisGameMonitorImpl setTennisGameMonitor) {
         this.setTennisGameMonitor = setTennisGameMonitor;
+        return this;
+    }
+
+    public MatchRule getMatchRule() {
+        return matchRule;
+    }
+
+    public MatchObserverImpl setMatchRule(MatchRule matchRule) {
+        this.matchRule = matchRule;
         return this;
     }
 
@@ -69,10 +79,10 @@ public class MatchObserverImpl implements MatchObserver {
     }
 
     private Match endMatchOrGetToNextSet(Match match, SetTennisGame currentSetTennisGame) {
-        if (match.getFirstPlayerWinSetNumber().equals(3)) {
-            return match.setMatchStatus(FIRST_PLAYER_WIN);
-        } else if (match.getSecondPlayerWinSetNumber().equals(3)) {
-            return match.setMatchStatus(SECOND_PLAYER_WIN);
+        matchRule.validate(match);
+        if (match.getMatchStatus().equals(FIRST_PLAYER_WIN) ||
+                match.getMatchStatus().equals(SECOND_PLAYER_WIN)) {
+            return match;
         }
         SetTennisGame setTennisGame = new SetTennisGameBuilder()
                 .withGame(currentSetTennisGame.getGame())

@@ -1,14 +1,15 @@
 package com.kata.tennis.set;
 
 import com.kata.tennis.game.GameScore;
+import com.kata.tennis.rule.set.SetRule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.kata.tennis.game.GameScore.FIRST_PLAYER_WIN;
-import static com.kata.tennis.game.GameScore.SECOND_PLAYER_WIN;
-import static com.kata.tennis.game.GameScore.ZERO_ALL;
 
 @Service
 public class SetTennisGameMonitorImpl implements SetTennisGameMonitor {
+
+    @Autowired
+    private SetRule setRule;
 
     private SetTennisGame setTennisGame;
 
@@ -21,34 +22,22 @@ public class SetTennisGameMonitorImpl implements SetTennisGameMonitor {
         return this;
     }
 
+    public SetRule getSetRule() {
+        return setRule;
+    }
+
+    public SetTennisGameMonitorImpl setSetRule(SetRule setRule) {
+        this.setRule = setRule;
+        return this;
+    }
+
     @Override
     public void winPoint(Integer playerId) {
-        GameScore newScore = setTennisGame.getGame().getScore().getNext(playerId);
-        if (FIRST_PLAYER_WIN.equals(newScore)) {
-            setTennisGame.increaseFirstPlayerSetScore();
-            checkSetStatus();
-        } else if (SECOND_PLAYER_WIN.equals(newScore)) {
-            setTennisGame.increaseSecondPlayerSetScore();
-            checkSetStatus();
-        } else {
-            setTennisGame.getGame().setScore(newScore);
-        }
+        GameScore newScore = getCurrentScore().getNext(playerId);
+        setRule.validate(newScore, setTennisGame);
     }
 
-    private void checkSetStatus() {
-        setTennisGame.getGame().setScore(ZERO_ALL);
-        if (isSixOrGreaterScore() && isDiff2()) {
-            setTennisGame.setInProgress(false);
-        }
+    private GameScore getCurrentScore() {
+        return setTennisGame.getGame().getScore();
     }
-
-    private boolean isSixOrGreaterScore() {
-        return (setTennisGame.getScoreFirstPlayer() >= 6) || (setTennisGame.getScoreSecondPlayer() >= 6);
-    }
-
-    private boolean isDiff2() {
-        return (setTennisGame.getScoreFirstPlayer() - setTennisGame.getScoreSecondPlayer() >= 2)
-                || (setTennisGame.getScoreSecondPlayer() - setTennisGame.getScoreFirstPlayer() >= 2);
-    }
-
 }

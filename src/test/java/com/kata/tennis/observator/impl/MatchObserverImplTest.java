@@ -5,11 +5,16 @@ import com.kata.tennis.exception.NoPlayerFoundRuntimeException;
 import com.kata.tennis.game.GameScore;
 import com.kata.tennis.match.Match;
 import com.kata.tennis.player.Player;
+import com.kata.tennis.rule.match.MatchRule;
+import com.kata.tennis.rule.match.MatchRulesImpl;
+import com.kata.tennis.rule.set.SetRuleImpl;
+import com.kata.tennis.set.SetTennisGameMonitor;
 import com.kata.tennis.set.SetTennisGameMonitorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static com.kata.tennis.TennisTestUtil.*;
@@ -24,7 +29,6 @@ public class MatchObserverImplTest {
     @InjectMocks
     private MatchObserverImpl matchObserverImpl;
 
-    private SetTennisGameMonitorImpl setTennisGameMonitor = new SetTennisGameMonitorImpl();
     private Match match;
 
     @Before
@@ -32,11 +36,13 @@ public class MatchObserverImplTest {
         Player michael = getFirstPlayer("Michael");
         Player david = getSecondPlayer("David");
         match = getAndStartMatch(michael, david);
-        matchObserverImpl.setSetTennisGameMonitor(setTennisGameMonitor);
+        SetTennisGameMonitorImpl setTennisGameMonitor = new SetTennisGameMonitorImpl().setSetRule(new SetRuleImpl());
+        matchObserverImpl.setSetTennisGameMonitor(setTennisGameMonitor)
+        .setMatchRule(new MatchRulesImpl());
     }
 
     @Test
-    public void checkScoresShouldEndTheMatchWhenFirstPlayerWin() {
+    public void shouldEndTheMatch_whenFirstPlayerWinAndAlreadyWonTwoSets() {
         setLastSetData(FORTY_ZERO, 5, 0);
         match.setFirstPlayerWinSetNumber(2);
 
@@ -46,7 +52,7 @@ public class MatchObserverImplTest {
     }
 
     @Test
-    public void checkScoresShouldEndTheMatchWhenSecondPlayerWin() {
+    public void shouldEndTheMatch_whenSecondPlayerWinAndAlreadyWonTwoSets() {
         setLastSetData(ZERO_FORTY, 3, 5);
         match.setSecondPlayerWinSetNumber(2);
 
@@ -56,7 +62,7 @@ public class MatchObserverImplTest {
     }
 
     @Test
-    public void checkScoresShouldNotEndTheMatch() {
+    public void shouldNotEndTheMatch_whenFirstPlayerWinAndAlreadyWonOneSet() {
         setLastSetData(FORTY_ZERO, 5, 0);
         match.setFirstPlayerWinSetNumber(1);
 
@@ -65,15 +71,25 @@ public class MatchObserverImplTest {
         assertThat(match.getMatchStatus()).isEqualTo(IN_PROGRESS);
     }
 
+    @Test
+    public void shouldNotEndTheMatch_whenSecondPlayerWinAndAlreadyWonOneSet() {
+        setLastSetData(ZERO_FORTY, 5, 0);
+        match.setSecondPlayerWinSetNumber(1);
+
+        matchObserverImpl.handleChanges(2, match);
+
+        assertThat(match.getMatchStatus()).isEqualTo(IN_PROGRESS);
+    }
+
     @Test(expected = MatchAlreadyOverRuntimeException.class)
-    public void checkScoresShouldThrowMatchAlreadyOverRuntimeException() {
+    public void shouldThrowMatchAlreadyOverRuntimeException_whenMatchIsAlreadyFinished() {
         match.setMatchStatus(FIRST_PLAYER_WIN);
 
         matchObserverImpl.handleChanges(1, match);
     }
 
     @Test(expected = NoPlayerFoundRuntimeException.class)
-    public void checkScoresShouldThrowNoPlayerFoundRuntimeException() {
+    public void shouldThrowNoPlayerFoundRuntimeException_whenMatchIsAlreadyFinished() {
         matchObserverImpl.handleChanges(5, match);
     }
 

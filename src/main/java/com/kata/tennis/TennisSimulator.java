@@ -8,6 +8,8 @@ import com.kata.tennis.observator.impl.MatchObservableImpl;
 import com.kata.tennis.observator.impl.MatchObserverImpl;
 import com.kata.tennis.player.Player;
 import com.kata.tennis.player.PlayerBuilder;
+import com.kata.tennis.rule.match.MatchRulesImpl;
+import com.kata.tennis.rule.set.SetRuleImpl;
 import com.kata.tennis.set.SetTennisGame;
 import com.kata.tennis.set.SetTennisGameMonitorImpl;
 import org.springframework.stereotype.Component;
@@ -24,14 +26,8 @@ public class TennisSimulator {
         Player firstPlayer = getFirstPlayer("Michael");
         Player secondPlayer = getSecondPlayer("David");
         Match match = getMatch(firstPlayer, secondPlayer);
-
-        MatchMonitorImpl matchMonitor = new MatchMonitorImpl();
-        MatchObservable matchObservable = new MatchObservableImpl();
-        matchMonitor.setMatchObservable(matchObservable);
-        matchMonitor.addObserver(new MatchObserverImpl().setSetTennisGameMonitor(new SetTennisGameMonitorImpl()));
-        matchMonitor.setMatch(match);
+        MatchMonitorImpl matchMonitor = setMatchMonitorData(match);
         match.start();
-
         System.out.print("############## Tennis-Game output ############## \n");
         do {
             Integer playerId = randomPlayer(firstPlayer, secondPlayer).getId();
@@ -39,6 +35,18 @@ public class TennisSimulator {
             print(match);
         } while (match.getMatchStatus().isInProgress());
         System.out.print("\n############## END OUTPUT ############## \n");
+    }
+
+    private MatchMonitorImpl setMatchMonitorData(Match match) {
+        MatchMonitorImpl matchMonitor = new MatchMonitorImpl();
+        MatchObservable matchObservable = new MatchObservableImpl();
+        matchMonitor.setMatchObservable(matchObservable);
+
+        matchMonitor.addObserver(new MatchObserverImpl()
+                .setSetTennisGameMonitor(new SetTennisGameMonitorImpl().setSetRule(new SetRuleImpl()))
+                .setMatchRule(new MatchRulesImpl()));
+        matchMonitor.setMatch(match);
+        return matchMonitor;
     }
 
     private void print(Match match) {
